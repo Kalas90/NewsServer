@@ -16,7 +16,7 @@ using namespace std;
 class MessageHandler {
 
 public:
-	MessageHandler(shared_ptr<Connection> connection);
+	MessageHandler(const shared_ptr<Connection>& connection);
 	void sendCode(int code);
 	void sendInt(int value);
 	void sendIntParameter(int param);
@@ -25,6 +25,7 @@ public:
 	int recvInt();
 	int recvIntParameter();
 	string recvStringParameter();
+	shared_ptr<Connection> getConnection();
 	
 private:
 	shared_ptr<Connection> conn;

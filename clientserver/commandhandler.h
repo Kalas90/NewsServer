@@ -6,31 +6,36 @@
 #include "connection.h"
 #include "protocol.h"
 #include "connectionclosedexception.h"
+#include "structures.h"
+#include "databasehandler.h"
+
+#include <memory>
+#include <vector>
+#include <iostream>
+#include <string>
+#include <stdexcept>
+#include <cstdlib>
 
 using namespace std;
 
 class CommandHandler {
 
 public:
-	CommandHandler(Server& server);
-	ansListNewsgroups();
-	ansCreateNewsgroup(bool success);
-	ansDeleteNewsgroup(bool success);
-	ansListArticles(bool success);
-	ansCreateArticle(bool success);
-	ansDeleteArticle(bool success);
-	ansGetArticle(bool success);
-	reqListNewsgroups();
-	reqCreateNewsgroup(string name);
-	reqDeleteNewsgroup(int id);
-	reqListArticles(int id);
-	reqCreateArticle(int id);
-	reqDeleteArticle(int id);
-	reqGetArticle(int idN, int idA);
+	CommandHandler(const shared_ptr<Connection>& connection, DatabaseHandler& dbHandler);
+	void ansListNewsgroups();
+	void ansCreateNewsgroup();
+	void ansDeleteNewsgroup();
+	void ansListArticles();
+	void ansCreateArticle();
+	void ansDeleteArticle();
+	void ansGetArticle();
+	int recvCode();
 	shared_ptr<Connection> getConnection();
 private:
 	shared_ptr<Connection> conn;
 	MessageHandler messageHandler;
+	DatabaseHandler& databaseHandler;
+	bool confirmEnd();
 
 };
 #endif

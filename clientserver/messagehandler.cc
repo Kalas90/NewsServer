@@ -2,7 +2,7 @@
 
 using namespace std;
 
-MessageHandler::MessageHandler(shared_ptr<Connection> connection) : conn(connection) {} 
+MessageHandler::MessageHandler(const shared_ptr<Connection>& connection) : conn(connection) {} 
 
 void MessageHandler::sendByte(int code) {
 	conn->write(static_cast<char>(code));
