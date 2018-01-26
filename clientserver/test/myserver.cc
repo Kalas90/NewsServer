@@ -19,7 +19,7 @@ int main(int argc, char* argv[]){
 		cerr << "Usage: myserver port-number" << endl;
 		exit(1);
 	}
-		
+
 	int port = -2;
 	try {
 		port = stoi(argv[1]);

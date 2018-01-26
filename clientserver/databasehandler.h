@@ -4,6 +4,7 @@
 #include "structures.h"
 
 #include <string>
+#include <utility>
 
 using namespace std;
 
@@ -13,13 +14,13 @@ public:
 	const vector<Newsgroup>& listNewsgroups();
 	bool createNewsgroup(const string& name);
 	bool deleteNewsgroup(const int& id);
-	vector<Article> listArticles(const int& id);
+	pair<bool, vector<Article>> listArticles(const int& id);
 	bool createArticle(const int& idN, const string& title, const string& author, const string& text);
-	bool deleteArticle(const int& idN, const int& idA);
-	Article getArticle(const int& idN, const int& idA);
+	pair<bool, bool> deleteArticle(const int& idN, const int& idA);
+	pair<unique_ptr<Article>, bool> getArticle(const int& idN, const int& idA);
 private:
 	static vector<Newsgroup> newsgroups;
-	static int maxIdN;
+	static int nextIdN;
 };	
 
 #endif

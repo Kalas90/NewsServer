@@ -61,7 +61,7 @@ int main(int argc, char* argv[]) {
 			cout << " " << reply << endl;
 			cout << "Type another number: ";
 		} catch (ConnectionClosedException&) {
-			cout << " no reply from server. Exiting." << endl;
+			cout << "Exiting." << endl;
 			exit(1);
 		}
 	}

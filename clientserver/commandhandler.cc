@@ -8,7 +8,6 @@ void CommandHandler::ansListNewsgroups(){
 	confirmEnd();
 	vector<Newsgroup> newsgroups = databaseHandler.listNewsgroups();
 	int quantity = newsgroups.size(); 
-	cout << "quantity: " << quantity << endl;
 
 	messageHandler.sendCode(Protocol::ANS_LIST_NG);	
 	messageHandler.sendIntParameter(quantity);
@@ -54,12 +53,20 @@ void CommandHandler::ansDeleteNewsgroup(){
 void CommandHandler::ansListArticles(){
 	int id = messageHandler.recvIntParameter();
 	confirmEnd();
-	//Get articles
 	
-	bool success;
+	pair<bool, vector<Article>> results = databaseHandler.listArticles(id);
 	messageHandler.sendCode(Protocol::ANS_LIST_ART);
-	if (success) {
-		//List articles
+	if (results.first) {
+		vector<Article> articles = results.second;
+		messageHandler.sendCode(Protocol::ANS_ACK);
+		messageHandler.sendIntParameter(articles.size());
+		if(articles.size() > 0) {	
+			for_each(articles.begin(), articles.end(), [&](const Article& art)
+				{
+					messageHandler.sendIntParameter(art.id);
+					messageHandler.sendStringParameter(art.title);
+				});	
+		}
 	} else {
 		messageHandler.sendCode(Protocol::ANS_NAK);
 		messageHandler.sendCode(Protocol::ERR_NG_DOES_NOT_EXIST);
@@ -73,9 +80,8 @@ void CommandHandler::ansCreateArticle(){
 	string author = messageHandler.recvStringParameter();
 	string text = messageHandler.recvStringParameter();
 	confirmEnd();
-	// Create article
-	
-	bool success;
+		
+	bool success = databaseHandler.createArticle(id, title, author, text);;
 	messageHandler.sendCode(Protocol::ANS_CREATE_ART);
 	if (success) {
 		messageHandler.sendCode(Protocol::ANS_ACK);
@@ -90,16 +96,18 @@ void CommandHandler::ansDeleteArticle(){
 	int idN = messageHandler.recvIntParameter();
 	int idA = messageHandler.recvIntParameter();
 	confirmEnd();
-	// Delete Article
 	
-	bool success;
+	pair<bool, bool> success = databaseHandler.deleteArticle(idN, idA);
 	messageHandler.sendCode(Protocol::ANS_DELETE_ART);
-	if (success) {
+	if (success.first && success.second) {
 		messageHandler.sendCode(Protocol::ANS_ACK);
 	} else {
 		messageHandler.sendCode(Protocol::ANS_NAK);
-		//if(art or newsg)
-		messageHandler.sendCode(Protocol::ERR_NG_DOES_NOT_EXIST);
+		if(!success.first) {
+			messageHandler.sendCode(Protocol::ERR_NG_DOES_NOT_EXIST);
+		} else {
+			messageHandler.sendCode(Protocol::ERR_ART_DOES_NOT_EXIST);
+		}
 	}
 	messageHandler.sendCode(Protocol::ANS_END);	
 }
@@ -108,17 +116,21 @@ void CommandHandler::ansGetArticle(){
 	int idN = messageHandler.recvIntParameter();
 	int idA = messageHandler.recvIntParameter();
 	confirmEnd();
-	//get article
 	
-	bool success;
+	pair<unique_ptr<Article>, bool> art = databaseHandler.getArticle(idN, idA);
 	messageHandler.sendCode(Protocol::ANS_GET_ART);
-	if (success) {
+	if (art.first && art.second) {
 		messageHandler.sendCode(Protocol::ANS_ACK);
-		//send title, author, test
+		messageHandler.sendStringParameter(art.first->title);
+		messageHandler.sendStringParameter(art.first->author);
+		messageHandler.sendStringParameter(art.first->text);
 	} else {
 		messageHandler.sendCode(Protocol::ANS_NAK);
-		//if(art or newsg)
-		messageHandler.sendCode(Protocol::ERR_NG_DOES_NOT_EXIST);
+		if(art.second) {
+			messageHandler.sendCode(Protocol::ERR_NG_DOES_NOT_EXIST);
+		} else {
+			messageHandler.sendCode(Protocol::ERR_ART_DOES_NOT_EXIST);
+		}
 	}
 	messageHandler.sendCode(Protocol::ANS_END);	
 }

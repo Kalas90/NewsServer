@@ -1,2 +1,3 @@
 clientcommandhandler.o clientcommandhandler.d : clientcommandhandler.cc clientcommandhandler.h \
-  messagehandler.h connectionclosedexception.h protocol.h connection.h
+  connectionclosedexception.h nakexception.h messagehandler.h protocol.h \
+  connection.h
