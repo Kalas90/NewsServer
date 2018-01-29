@@ -16,7 +16,8 @@ int main(int argc, char* argv[]) {
 		cerr << "Usage: myclient host-name port-number" << endl;
 		exit(1);
 	}
-	
+
+
 	int port = -1;
 	try {
 		port = stoi(argv[2]);
@@ -64,6 +65,7 @@ int main(int argc, char* argv[]) {
 				string idString;
 				getline(cin, idString);
 				int id = atoi(idString.c_str());
+				cout << "converted id: " << id << endl;
 				cout << "Article title: ";
 				string title;
 				getline(cin, title);

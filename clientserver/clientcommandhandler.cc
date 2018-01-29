@@ -35,7 +35,6 @@ void ClientCommandHandler::reqCreateNewsgroup(const string& name){
 		confirmEnd();
 	} else if (code == Protocol::ANS_NAK){
 		doesNotExist();		
-		confirmEnd();
 	} else {
 		wrongCode();
 	}
@@ -56,7 +55,6 @@ void ClientCommandHandler::reqDeleteNewsgroup(const int& id){
 		confirmEnd();
 	} else if (code == Protocol::ANS_NAK) {
 		doesNotExist();
-		confirmEnd();
 	} else {
 		wrongCode();
 	}	
@@ -83,7 +81,6 @@ void ClientCommandHandler::reqListArticles(const int& id){
 		
 	} else if (code == Protocol::ANS_NAK) {
 		doesNotExist();
-		confirmEnd();
 	} else {
 		wrongCode();
 	}	
@@ -106,7 +103,6 @@ void ClientCommandHandler::reqCreateArticle(const int& id, const string& title, 
 		confirmEnd();
 	} else if (code == Protocol::ANS_NAK){
 		doesNotExist();		
-		confirmEnd();
 	} else {
 		wrongCode();
 	}
@@ -128,7 +124,6 @@ void ClientCommandHandler::reqDeleteArticle(const int& idN, const int& idA){
 		confirmEnd();
 	} else if (code == Protocol::ANS_NAK) {
 		doesNotExist();
-		confirmEnd();
 	} else {
 		wrongCode();
 	}	
@@ -152,7 +147,6 @@ void ClientCommandHandler::reqGetArticle(const int& idN, const int& idA){
 		confirmEnd();
 	} else if (code == Protocol::ANS_NAK) {
 		doesNotExist();
-		confirmEnd();
 	} else {
 		wrongCode();
 	}	
@@ -175,12 +169,15 @@ void ClientCommandHandler::doesNotExist() {
 	int code = messageHandler.recvCode();
 	if(code == Protocol::ERR_NG_ALREADY_EXISTS) {
 		cerr << "That Newsgroup already exists" << endl;
+		confirmEnd();
 		throw NAKException();
 	} else if(code == Protocol::ERR_NG_DOES_NOT_EXIST) {
 		cerr << "That Newsgroup does not exist" << endl;
+		confirmEnd();
 		throw NAKException();
 	} else if(code == Protocol::ERR_ART_DOES_NOT_EXIST) {
 		cerr << "That Article does not exist" << endl;
+		confirmEnd();
 		throw NAKException();
 	} else {
 		cerr << "Protocol Error: Did not receive expected code." << endl;

@@ -57,6 +57,7 @@ bool DatabaseHandler::createArticle(const int& idN, const string& title, const s
 		if(idN == ng.id){	
 			ng.articles.emplace_back(Article{ng.idA, title, author, text});
 					ng.idA++;
+					cout << "found newsgroup created article" << endl;
 					success = true;
 				}
 			});
